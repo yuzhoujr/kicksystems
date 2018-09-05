@@ -1,13 +1,13 @@
 # Thread
 
-##intro
+## intro
 每个thread都有自己的thread context, 比process的context要小很多. Thread context包括TID(thread ID), stack, stack pointer, PC, general-purpose registers and condition code. 所有的thread共享宿主process的virtual address space.
 
 Thread由kernel调度, 并且kernel知道有这么一个thread(通过PID). 因为一个process下的thread都跑在其virtual address space, 这些threads就共享了code, global data, heap, shared libraries and open files(file descriptors).
 
 Thread的context switch要比process的context switch快很多. 跟process有父子关系不同, threads之间地位平等，可以互相kill,wait,也能互相读写shared data.
 
-##Posix Threads
+## Posix Threads
 Posix threads (Pthreads) is a standard interface for manipulating threads from C programs. It was adopted in 1995 and is available on most Unix systems. Pthreads defines about 60 functions that allow programs to create, kill, and reap threads, to share data safely with peer threads, and to notify peers about changes in the system state.
 
 sample code:
@@ -25,7 +25,7 @@ sample code:
         return NULL;
     }
 
-###Creating Threads
+### Creating Threads
     #include <pthread.h>
     typedef void *(func)(void *);
     int pthread_create(pthread_t *tid, pthread_attr_t *attr, func *f, void *arg);
@@ -38,7 +38,7 @@ sample code:
     
                                                 Returns: thread ID of caller
 
-###Terminating Threads
+### Terminating Threads
 The thread terminates explicitly by calling the **pthread_exit** function. If the main thread calls pthread_exit, it waits for all other peer threads to terminate, and then terminates the main thread and the entire process with a return value of thread_return.
 
     #include <pthread.h>
@@ -53,7 +53,7 @@ The thread terminates explicitly by calling the **pthread_exit** function. If th
 
                             Returns: 0 if OK, nonzero on error
                             
-###Reaping Terminated Threads
+### Reaping Terminated Threads
 Threads wait for other threads to terminate by calling the **pthread_join** function.
     #include <pthread.h>
     int pthread_join(pthread_t tid, void **thread_return);
@@ -62,7 +62,7 @@ Threads wait for other threads to terminate by calling the **pthread_join** func
                             
 调用该函数的时候会堵塞，直到tid那个thread返回，然后回收已终止thread的所有存储器资源. **和wait()函数不同, pthread_join只能等待一个指定tid的thread, 而不能等待所有的.**
 
-###Detaching Threads
+### Detaching Threads
 一个没有被detach的thread可以被杀死. 而detached的thread不能够被其他thread kill, 它的资源在终止时由系统自动释放.
 
     #include <pthread.h>
